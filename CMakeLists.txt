@@ -443,6 +443,10 @@ else() # GCC or CLANG
 	target_link_options(AliceCommon INTERFACE -rdynamic -Wl,-E)
 	# common flags for all linux builds
 	set(CommonLinuxFlags -Wall -Wextra -Wpedantic -fstrict-aliasing -Wno-unused-parameter -Wno-unused-variable -Wno-switch -Wdangling-else -Wno-unused-private-field -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-microsoft-cast -Wno-declaration-after-statement)
+	set(ALICE_X86_CPU FALSE)
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64|i[3-6]86)$")
+		set(ALICE_X86_CPU TRUE)
+	endif()
 	# See for FMA support: https://stackoverflow.com/questions/21001388/fma3-in-gcc-how-to-enable
 	#Clang
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -458,15 +462,18 @@ else() # GCC or CLANG
 			$<$<NOT:$<CONFIG:Debug>>: 	-O3 -pipe -fno-rtti -DNDEBUG>)
 	endif()
 
-	if(VECTOR_MODE STREQUAL "AVX512")
+	if(VECTOR_MODE STREQUAL "AVX512" AND ALICE_X86_CPU)
 		target_compile_options(AliceCommon INTERFACE
 		-mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mfma )
-	elseif(VECTOR_MODE STREQUAL "AVX2")
+	elseif(VECTOR_MODE STREQUAL "AVX2" AND ALICE_X86_CPU)
 		target_compile_options(AliceCommon INTERFACE
 		-mavx2 -mfma )
-	else()
+	elseif(ALICE_X86_CPU)
 		target_compile_options(AliceCommon INTERFACE
 		-march=nehalem -fno-fast-math -ffp-model=precise -ffp-contract=off )
+	else()
+		target_compile_options(AliceCommon INTERFACE
+		-fno-fast-math -ffp-model=precise -ffp-contract=off )
 	endif()
 
 
