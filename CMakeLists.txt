@@ -438,9 +438,15 @@ if(WIN32)
 
 	endif()
 else() # GCC or CLANG
-	target_link_options(Alice INTERFACE -rdynamic -Wl,-E)
-	target_link_options(AliceIncremental INTERFACE -rdynamic -Wl,-E)
-	target_link_options(AliceCommon INTERFACE -rdynamic -Wl,-E)
+	if(APPLE)
+		target_link_options(Alice INTERFACE -rdynamic)
+		target_link_options(AliceIncremental INTERFACE -rdynamic)
+		target_link_options(AliceCommon INTERFACE -rdynamic)
+	else()
+		target_link_options(Alice INTERFACE -rdynamic -Wl,-E)
+		target_link_options(AliceIncremental INTERFACE -rdynamic -Wl,-E)
+		target_link_options(AliceCommon INTERFACE -rdynamic -Wl,-E)
+	endif()
 	# common flags for all linux builds
 	set(CommonLinuxFlags -Wall -Wextra -Wpedantic -fstrict-aliasing -Wno-unused-parameter -Wno-unused-variable -Wno-switch -Wdangling-else -Wno-unused-private-field -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-microsoft-cast -Wno-declaration-after-statement)
 	set(ALICE_X86_CPU FALSE)
