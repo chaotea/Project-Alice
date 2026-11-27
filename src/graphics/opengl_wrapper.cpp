@@ -89,7 +89,10 @@ static std::string normalize_apple_geometry_shader_source(std::string_view sourc
 			end = source.size();
 		}
 		auto line = std::string_view(source.data() + start, end - start);
-		if(line.ends_with("};") && !line.starts_with("struct ")) {
+		// Drop the stray ';' after a function body, which GLSL 4.10 rejects.
+		// Only a bare "};" line qualifies, so initializers are left alone.
+		auto first = line.find_first_not_of(" \t");
+		if(first != std::string_view::npos && line.substr(first) == "};") {
 			normalized.append(line.data(), line.size() - 1);
 		} else {
 			normalized.append(line.data(), line.size());
