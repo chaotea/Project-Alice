@@ -16,6 +16,12 @@ FetchContent_Declare(
 FetchContent_GetProperties(glew)
 if(NOT glew_POPULATED)
 	FetchContent_Populate(glew)
+	if(APPLE)
+		file(READ "${glew_SOURCE_DIR}/CMakeLists.txt" GLEW_CMAKE)
+		string(REPLACE "find_library(AGL_LIBRARY AGL REQUIRED)" "find_library(AGL_LIBRARY AGL)" GLEW_CMAKE "${GLEW_CMAKE}")
+		string(REPLACE "list(APPEND LIBRARIES \${AGL_LIBRARY})" "" GLEW_CMAKE "${GLEW_CMAKE}")
+		file(WRITE "${glew_SOURCE_DIR}/CMakeLists.txt" "${GLEW_CMAKE}")
+	endif()
 	add_subdirectory(${glew_SOURCE_DIR} ${glew_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
