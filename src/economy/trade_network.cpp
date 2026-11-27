@@ -149,6 +149,10 @@ void recalculate_markets_distance(sys::state& state) {
 
 				auto market_0_center = state.world.state_instance_get_capital(sid_0);
 				auto market_1_center = state.world.state_instance_get_capital(sid_1);
+				if(!market_0_center || !market_1_center) {
+					to_delete[route] = true;
+					return;
+				}
 				path = province::make_land_trade_path(state, market_0_center, market_1_center);
 
 				p_prev = market_0_center;

@@ -1932,7 +1932,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 			auto opened_file = open_file(province_file);
 			if(opened_file) {
 				auto content = view_contents(*opened_file);
-				lua_combined_script += content.data;
+				lua_combined_script.append(content.data, content.file_size);
 				simple_fs::standardize_newlines(lua_combined_script);
 				lua_combined_script += "\n";
 			}
@@ -1941,7 +1941,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 		auto hand_written_wrappers = open_file(assets_lua, NATIVE("custom_ffi.lua"));
 		if(hand_written_wrappers) {
 			auto content = view_contents(*hand_written_wrappers);
-			lua_combined_script += content.data;
+			lua_combined_script.append(content.data, content.file_size);
 			simple_fs::standardize_newlines(lua_combined_script);
 			lua_combined_script += "\n";
 		}
@@ -1951,7 +1951,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 		auto game_loop = open_file(assets_lua, NATIVE("loader_game_loop.lua"));
 		if(game_loop) {
 			auto content = view_contents(*game_loop);
-			lua_game_loop_script += content.data;
+			lua_game_loop_script.append(content.data, content.file_size);
 			simple_fs::standardize_newlines(lua_game_loop_script);
 			lua_game_loop_script += "\n";
 		}
@@ -1961,7 +1961,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 		auto ui_script = open_file(assets_lua, NATIVE("loader_ui.lua"));
 		if(ui_script) {
 			auto content = view_contents(*ui_script);
-			lua_ui_script += content.data;
+			lua_ui_script.append(content.data, content.file_size);
 			simple_fs::standardize_newlines(lua_ui_script);
 			lua_ui_script += "\n";
 		}
@@ -1972,7 +1972,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 			auto opened_file = open_file(lua_file);
 			if(opened_file) {
 				auto content = view_contents(*opened_file);
-				lua_combined_script += content.data;
+				lua_combined_script.append(content.data, content.file_size);
 				simple_fs::standardize_newlines(lua_combined_script);
 				lua_combined_script += "\n";
 			}
@@ -1984,7 +1984,7 @@ void state::load_scenario_data(parsers::error_handler& err, sys::year_month_day 
 			auto opened_file = open_file(lua_file);
 			if(opened_file) {
 				auto content = view_contents(*opened_file);
-				lua_combined_script += content.data;
+				lua_combined_script.append(content.data, content.file_size);
 				simple_fs::standardize_newlines(lua_combined_script);
 				lua_combined_script += "\n";
 			}

@@ -746,7 +746,7 @@ struct ui_cache {
 /// <summary>
 /// Holds important data about the game world, state, and other data regarding windowing, audio, and more.
 /// </summary>
-struct alignas(64) state {
+struct alignas(256) state {
 	dcon::data_container world; // Holds data regarding the game world. Also contains user locales.
 
 	// scenario data

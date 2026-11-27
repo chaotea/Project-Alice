@@ -4,7 +4,10 @@ out vec4 frag_color;
 
 uniform sampler2D provinces_texture_sampler;
 uniform sampler2D terrain_texture_sampler;
+#ifndef ALICE_OPENGL_41
+// macOS allows 16 fragment samplers; the 2D sheet path is unused (texturesheet_is_dds is never set)
 uniform sampler2D terrainsheet_texture_sampler;
+#endif
 uniform sampler2DArray terrainsheet_texture_sampler_array;
 uniform sampler2D water_normal;
 uniform sampler2D colormap_water;
@@ -150,14 +153,15 @@ vec4 get_terrain(vec2 corner, vec2 offset) {
 		is_water = 1.f;
 	}
 
+#ifndef ALICE_OPENGL_41
 	if (terrain_is_array == 0) {
 		vec2 sample_from = (mod(offset, 1.f) * 255.f / 256.f + 1.f / 256.f / 2.f) / 8.f  + vec2(mod(index, 8.f), floor(index / 8.f)) / 8.f;
 		vec4 colour = texture(terrainsheet_texture_sampler, vec2(sample_from.x, sample_from.y));
 		return mix(colour, vec4(0.), is_water);
-	} else {
-		vec4 colour = texture(terrainsheet_texture_sampler_array, vec3(offset, index));
-		return mix(colour, vec4(0.), is_water);
 	}
+#endif
+	vec4 colour = texture(terrainsheet_texture_sampler_array, vec3(offset, index));
+	return mix(colour, vec4(0.), is_water);
 }
 
 vec4 get_terrain_mix() {
@@ -296,7 +300,7 @@ vec4 get_land_political_modern() {
 		is_colonised = false;
 	}
 
-	Lab out_oklab = {0.f, 0.f, 0.f};
+	Lab out_oklab = Lab(0.f, 0.f, 0.f);
 
 	if (is_colonised) {
 		float t = 0.3f + 0.5f / zoom + (1.f - to_national_border) * 0.7f;

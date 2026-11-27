@@ -22,6 +22,11 @@ set_source_files_properties(${PROJECT_SOURCE_DIR}/src/lunasvg/plutovg-surface.c 
 
 target_link_libraries(tests_project PRIVATE AliceCommon)
 
+if(NOT WIN32)
+	# Catch2 supplies main(); the nix entry point would define a second one.
+	target_compile_definitions(tests_project PRIVATE ALICE_NO_ENTRY_POINT=1)
+endif()
+
 FetchContent_MakeAvailable(Catch2)
 
 # Link to the desired libraries
