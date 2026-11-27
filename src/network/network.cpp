@@ -804,7 +804,11 @@ static socket_t socket_init_server(bool as_v6, struct sockaddr_storage& server_a
 		window::emit_error_message("Network setsockopt [sndtimeo] error: " + get_last_error_msg(), true);
 	}
 #else
-	if(setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+	// Option names are not bit flags: OR-ing them only worked by accident on Linux, and fails with EINVAL on macOS.
+	if(setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
+		std::abort();
+	}
+	if(setsockopt(socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt))) {
 		std::abort();
 	}
 	if(setsockopt(socket_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
