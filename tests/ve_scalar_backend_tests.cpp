@@ -1,14 +1,15 @@
 #include "ve.hpp"
 
 namespace {
+	// Mirrors a generated dcon id: constructed from an index, stores index + 1.
 	struct test_tag16 {
 		using value_base_t = uint16_t;
 		using zero_is_null_t = std::true_type;
 		uint16_t value = 0;
 
 		test_tag16() = default;
-		explicit test_tag16(uint16_t v) : value(v) {}
-		int32_t index() const { return int32_t(value); }
+		explicit test_tag16(uint16_t v) : value(uint16_t(v + 1)) {}
+		int32_t index() const { return int32_t(value) - 1; }
 	};
 
 	struct test_tag32 {
@@ -27,8 +28,9 @@ namespace {
 		uint16_t value = 0;
 
 		test_zero_is_null_index_tag() = default;
+		// Takes the raw stored value; index() is zero-based like a dcon id.
 		explicit test_zero_is_null_index_tag(uint16_t v) : value(v) {}
-		int32_t index() const { return value == 0 ? 0 : int32_t(value) - 1; }
+		int32_t index() const { return int32_t(value) - 1; }
 	};
 
 	struct test_zero_is_null_source_tag {
@@ -38,7 +40,7 @@ namespace {
 
 		test_zero_is_null_source_tag() = default;
 		explicit test_zero_is_null_source_tag(uint16_t v) : value(v) {}
-		int32_t index() const { return int32_t(value); }
+		int32_t index() const { return int32_t(value) - 1; }
 	};
 }
 
